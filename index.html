@@ -3,123 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>수학학원 오답 체크 (V6-학년별 숙제 배부)</title>
+    <title>이튼영어수학학원 오답 체크 시스템</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body { font-family: 'Pretendard', -apple-system, sans-serif; }</style>
+    <style>
+        body { font-family: 'Pretendard', -apple-system, sans-serif; }
+        /* 학원 네온사인 감성의 포인트 컬러 맞춤 설정 */
+        .brand-blue-bg { background-color: #2541ff; }
+        .brand-blue-text { color: #2541ff; }
+        .brand-blue-border { border-color: #2541ff; }
+        .brand-yellow-bg { background-color: #ffe600; }
+        .brand-yellow-text { color: #ffe600; }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen" onload="loadStudentsFromGoogle()">
+<body class="bg-slate-50 min-h-screen" onload="loadStudentsFromGoogle()">
 
-    <!-- 상단 네비게이션 -->
-    <div class="bg-white shadow-sm border-b sticky top-0 z-50">
+    <!-- 🏛️ 학원 네온사인 컬러 반영 헤더 -->
+    <div class="brand-blue-bg shadow-md sticky top-0 z-50 text-white">
         <div class="max-w-md mx-auto px-4 flex justify-around">
-            <button id="btn-student" onclick="switchMode('student')" class="py-4 px-2 text-blue-600 border-b-2 border-blue-600 font-bold w-1/2 text-center">📱 학생용 입력</button>
-            <button id="btn-admin" onclick="checkAdminPassword()" class="py-4 px-2 text-gray-500 font-bold w-1/2 text-center">🔒 원장님 관리</button>
+            <button id="btn-student" onclick="switchMode('student')" class="py-4 px-2 border-b-4 border-white font-extrabold w-1/2 text-center transition-all">
+                📱 학생용 입력
+            </button>
+            <button id="btn-admin" onclick="checkAdminPassword()" class="py-4 px-2 text-blue-200 font-bold w-1/2 text-center transition-all opacity-80 hover:opacity-100">
+                🔒 Setting
+            </button>
         </div>
     </div>
 
     <div class="max-w-md mx-auto p-4 pb-24">
         <!-- 상태 표시 바 -->
-        <div id="status-bar" class="hidden bg-amber-50 text-amber-800 text-xs text-center py-2 rounded-xl border border-amber-100 mb-3 animate-pulse">
+        <div id="status-bar" class="hidden bg-blue-50 text-blue-700 text-xs text-center py-2 rounded-xl border border-blue-100 mb-3 animate-pulse font-medium">
             ⏳ 구글 시트에서 학생 명단과 보안 데이터를 동기화 중입니다...
         </div>
 
         <!-- ================= [학생용 화면] ================= -->
         <div id="view-student" class="block space-y-4">
+            
+            <!-- 타이틀 영역 -->
+            <div class="text-center py-2">
+                <h1 class="text-xl font-black text-slate-800 tracking-tight">이튼영어수학학원</h1>
+                <p class="text-xs text-slate-400 font-bold tracking-widest mt-0.5">MAY ETON FLOURISH</p>
+            </div>
+
             <!-- 이름 선택 영역 -->
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-3">
-                <h2 class="text-lg font-bold text-gray-800">👋 학년과 이름을 선택하세요</h2>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                <h2 class="text-base font-black text-slate-800 flex items-center gap-1.5">👋 반갑습니다! 학년과 이름을 골라주세요.</h2>
                 <div>
-                    <label class="text-xs text-gray-400 block mb-1">학년 선택</label>
-                    <select id="student-grade-selector" onchange="filterStudentNames()" class="w-full p-3 bg-gray-50 border rounded-xl font-medium">
+                    <label class="text-[11px] text-slate-400 block mb-1 font-bold">학년 선택</label>
+                    <select id="student-grade-selector" onchange="filterStudentNames()" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">-- 학년 선택 --</option>
                         <option value="중1">중1</option><option value="중2">중2</option><option value="중3">중3</option>
                         <option value="고1">고1</option><option value="고2">고2</option><option value="고3">고3</option>
                     </select>
                 </div>
                 <div>
-                    <label class="text-xs text-gray-400 block mb-1">이름 선택</label>
-                    <select id="student-name-selector" onchange="askStudentPassword()" class="w-full p-3 bg-gray-50 border rounded-xl font-medium" disabled>
+                    <label class="text-[11px] text-slate-400 block mb-1 font-bold">이름 선택</label>
+                    <select id="student-name-selector" onchange="askStudentPassword()" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
                         <option value="">-- 학년을 먼저 선택하세요 --</option>
                     </select>
                 </div>
             </div>
 
-            <!-- 🔒 학생 개인 인증 비밀번호 입력창 -->
-            <div id="student-auth-section" class="hidden bg-amber-50 p-5 rounded-2xl border border-amber-200 space-y-3">
-                <div class="flex items-center gap-2 text-amber-800">
-                    <span class="text-lg">🔒</span>
-                    <h3 class="font-bold text-sm">개인 보안 인증</h3>
+            <!-- 🔒 학생 개인 인증 비밀번호 입력창 (네온 옐로우 포인트 배경) -->
+            <div id="student-auth-section" class="hidden brand-yellow-bg p-5 rounded-2xl border border-yellow-300 space-y-3 shadow-sm">
+                <div class="flex items-center gap-2 text-slate-800">
+                    <span class="text-base">🔒</span>
+                    <h3 class="font-black text-sm">개인 보안 인증</h3>
                 </div>
-                <p class="text-xs text-amber-700">본인의 비밀번호 4자리를 입력해야 숙제 목록이 열립니다.</p>
+                <p class="text-xs text-slate-700 font-medium">본인의 비밀번호 4자리를 입력해야 숙제 목록이 열립니다.</p>
                 <div class="flex gap-2">
-                    <input type="password" id="student-password-input" maxlength="4" placeholder="비밀번호 4자리" class="w-full p-3 border rounded-xl font-bold text-center tracking-widest text-lg focus:ring-2 focus:ring-amber-400 focus:outline-none">
-                    <button onclick="verifyStudentPassword()" class="bg-amber-600 text-white px-5 rounded-xl font-bold text-sm hover:bg-amber-700 whitespace-nowrap">확인</button>
+                    <input type="password" id="student-password-input" maxlength="4" placeholder="비밀번호 4자리" class="w-full p-3.5 border border-yellow-400 rounded-xl font-black text-center tracking-widest text-xl focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white">
+                    <button onclick="verifyStudentPassword()" class="brand-blue-bg text-white px-6 rounded-xl font-black text-sm hover:bg-blue-700 whitespace-nowrap shadow-md">확인</button>
                 </div>
             </div>
 
-            <!-- 숙제 선택 카드 (인증 성공 후 내 학년 숙제만 노출) -->
-            <div id="student-homework-list-section" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-3">
-                <h3 class="text-sm font-bold text-gray-500" id="welcome-student-msg">📋 오늘 제출할 숙제를 선택하세요</h3>
+            <!-- 숙제 선택 카드 -->
+            <div id="student-homework-list-section" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                <h3 class="text-xs font-black text-slate-400 tracking-wider uppercase" id="welcome-student-msg">📋 오늘 제출할 숙제 선택</h3>
                 <div id="student-homework-buttons" class="space-y-2"></div>
             </div>
 
             <!-- 오답 번호판 카드 -->
-            <div id="homework-input-section" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-                <div class="border-b pb-3">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-md">O/X 마킹</span>
-                    <h3 class="text-xl font-bold text-gray-800 mt-1" id="selected-hw-title">숙제명</h3>
-                    <p class="text-sm text-gray-500 mt-1">📌 채점 후 <span class="text-red-500 font-bold">틀린 번호만 터치(X)</span> 하세요!</p>
+            <div id="homework-input-section" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <span class="brand-blue-bg text-white text-[10px] font-black px-2.5 py-1 rounded-md tracking-wider">O/X MARKING</span>
+                    <h3 class="text-lg font-black text-slate-800 mt-1.5" id="selected-hw-title">숙제명</h3>
+                    <p class="text-xs text-slate-400 mt-1 font-medium">📌 채점 확인 후 <span class="text-red-500 font-bold">틀린 번호만 터치해서 X로</span> 바꾸세요!</p>
                 </div>
                 <div class="grid grid-cols-5 gap-3 py-2" id="number-grid"></div>
-                <button onclick="submitToGoogleSheet()" id="submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition-colors">
-                    🚀 구글 시트로 오답 제출하기
+                <button onclick="submitToGoogleSheet()" id="submit-btn" class="w-full brand-blue-bg hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-lg transition-colors text-base tracking-wide">
+                    🚀 오답 기록 구글 시트로 제출하기
                 </button>
             </div>
         </div>
 
         <!-- ================= [원장님 관리 화면] ================= -->
         <div id="view-admin" class="hidden space-y-6">
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-                <h3 class="text-lg font-bold text-gray-800">📚 1. 숙제 배부 및 마감 관리</h3>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                <h3 class="text-base font-black text-slate-800 flex items-center gap-1.5">📚 1. 숙제 배부 및 마감 관리</h3>
                 <div class="space-y-3">
-                    <!-- ✨ 학년 선택 칸 추가 -->
                     <div>
-                        <label class="text-xs text-gray-500 block mb-1">대상 학년 선택</label>
-                        <select id="hw-target-grade" class="w-full p-3 bg-gray-50 border rounded-xl font-medium">
-                            <option value="중1">중학교 1학년</option>
-                            <option value="중2">중학교 2학년</option>
-                            <option value="중3">중학교 3학년</option>
-                            <option value="고1" selected>고등학교 1학년</option>
-                            <option value="고2">고등학교 2학년</option>
-                            <option value="고3">고등학교 3학년</option>
+                        <label class="text-[11px] text-slate-400 block mb-1 font-bold">대상 학년 선택</label>
+                        <select id="hw-target-grade" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-700">
+                            <option value="중1">중학교 1학년</option><option value="중2">중학교 2학년</option><option value="중3">중학교 3학년</option>
+                            <option value="고1" selected>고등학교 1학년</option><option value="고2">고등학교 2학년</option><option value="고3">고등학교 3학년</option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-xs text-gray-500 block mb-1">숙제 명칭 (예: 매쓰플랫 프린트 1회)</label>
-                        <input type="text" id="hw-title" placeholder="예: 매쓰플랫 다항식 고난도" class="w-full p-3 bg-gray-50 border rounded-xl">
+                        <label class="text-[11px] text-slate-400 block mb-1 font-bold">숙제 명칭 (예: 매쓰플랫 프린트 1회)</label>
+                        <input type="text" id="hw-title" placeholder="예: 매쓰플랫 다항식 고난도" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="number" id="hw-start" value="1" placeholder="시작번호" class="w-full p-3 bg-gray-50 border rounded-xl text-center font-bold">
-                        <input type="number" id="hw-end" value="20" placeholder="끝번호" class="w-full p-3 bg-gray-50 border rounded-xl text-center font-bold">
+                        <div>
+                            <label class="text-[11px] text-slate-400 block mb-1 font-bold">시작 번호</label>
+                            <input type="number" id="hw-start" value="1" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-slate-400 block mb-1 font-bold">끝 번호</label>
+                            <input type="number" id="hw-end" value="20" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold">
+                        </div>
                     </div>
                 </div>
-                <button onclick="addNewHomework()" class="w-full bg-gray-800 text-white py-3 rounded-xl text-sm font-semibold">이 숙제 추가 배부</button>
+                <button onclick="addNewHomework()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl text-sm font-black transition-colors">이 숙제 추가 배부</button>
                 
                 <div class="space-y-2 pt-2">
-                    <label class="text-xs text-gray-400 block font-bold">💡 진행 중인 숙제 (아이들에게 노출됨):</label>
-                    <ul id="admin-hw-list" class="text-xs text-gray-600 space-y-1 bg-gray-50 p-3 rounded-xl divide-y"></ul>
+                    <label class="text-xs text-slate-400 block font-black tracking-wide">💡 진행 중인 숙제 (아이들에게 노출됨):</label>
+                    <ul id="admin-hw-list" class="text-xs text-slate-600 space-y-1 bg-slate-50 p-3 rounded-xl divide-y divide-slate-200 border border-slate-100"></ul>
                 </div>
                 <div class="space-y-2 pt-2">
-                    <label class="text-xs text-gray-400 block font-bold">📁 마감된 숙제 목록 (아이들에게 숨김):</label>
-                    <ul id="admin-closed-hw-list" class="text-xs text-gray-400 space-y-1 bg-gray-100 p-3 rounded-xl divide-y"></ul>
+                    <label class="text-xs text-slate-400 block font-black tracking-wide">📁 마감된 숙제 목록 (아이들에게 숨김):</label>
+                    <ul id="admin-closed-hw-list" class="text-xs text-slate-400 space-y-1 bg-slate-100 p-3 rounded-xl divide-y divide-slate-200"></ul>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-2">
-                <h3 class="text-lg font-bold text-gray-800">👥 2. 동기화된 학생 명단 및 암호 확인</h3>
-                <p class="text-xs text-gray-400">※ 인원 추가/암호 변경은 구글 시트 <strong class="text-blue-600">[학생명단]</strong> 탭에서 하신 후 새로고침 하세요.</p>
-                <button onclick="loadStudentsFromGoogle()" class="w-full bg-slate-600 text-white py-2 rounded-xl text-xs font-semibold">🔄 명단 및 암호 강제 동기화</button>
-                <div class="max-h-40 overflow-y-auto border border-gray-100 rounded-xl p-2 space-y-1 text-xs bg-gray-50" id="admin-student-list"></div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-2">
+                <h3 class="text-base font-black text-slate-800">👥 2. 동기화된 학생 명단 및 암호 확인</h3>
+                <p class="text-xs text-slate-400 font-medium">※ 인원 추가/암호 변경은 구글 시트 <strong class="brand-blue-text font-bold">[학생명단]</strong> 탭에서 하신 후 새로고침 하세요.</p>
+                <button onclick="loadStudentsFromGoogle()" class="w-full bg-slate-600 hover:bg-slate-700 text-white py-2 rounded-xl text-xs font-bold transition-colors">🔄 명단 및 암호 강제 동기화</button>
+                <div class="max-h-40 overflow-y-auto border border-slate-100 rounded-xl p-2 space-y-1 text-xs bg-slate-50" id="admin-student-list"></div>
             </div>
         </div>
     </div>
@@ -130,9 +150,7 @@
         const ADMIN_PASSWORD = "0948";
 
         let students = [];
-        
-        // 구조 변경: targetGrade 항목 추가 기본값 세팅
-        let homeworks = JSON.parse(localStorage.getItem('academy_homeworks_v6')) || [
+        let homeworks = ㄹJSON.parse(localStorage.getItem('academy_homeworks_v7')) || [
             { id: 101, targetGrade: "고1", title: "[매쓰플랫] 다항식 연산 프린트", start: 1, end: 15, active: true }
         ];
 
@@ -175,12 +193,12 @@
             document.getElementById('view-admin').style.display = (mode === 'admin') ? 'block' : 'none';
 
             if (mode === 'student') {
-                btnStudent.className = "py-4 px-2 text-blue-600 border-b-2 border-blue-600 font-bold w-1/2 text-center";
-                btnAdmin.className = "py-4 px-2 text-gray-500 font-bold w-1/2 text-center";
+                btnStudent.className = "py-4 px-2 border-b-4 border-white font-extrabold w-1/2 text-center transition-all";
+                btnAdmin.className = "py-4 px-2 text-blue-200 font-bold w-1/2 text-center transition-all opacity-80 hover:opacity-100";
                 resetStudentView();
             } else {
-                btnAdmin.className = "py-4 px-2 text-blue-600 border-b-2 border-blue-600 font-bold w-1/2 text-center";
-                btnStudent.className = "py-4 px-2 text-gray-500 font-bold w-1/2 text-center";
+                btnAdmin.className = "py-4 px-2 border-b-4 border-white font-extrabold w-1/2 text-center transition-all";
+                btnStudent.className = "py-4 px-2 text-blue-200 font-bold w-1/2 text-center transition-all opacity-80 hover:opacity-100";
                 renderAdminSections();
             }
         }
@@ -238,23 +256,22 @@
             const listSection = document.getElementById('student-homework-list-section');
             const btnContainer = document.getElementById('student-homework-buttons');
             
-            document.getElementById('welcome-student-msg').innerHTML = `📋 <strong class="text-blue-600">${studentObj.name}</strong> 학생, 오늘 제출할 숙제를 선택하세요`;
+            document.getElementById('welcome-student-msg').innerHTML = `📋 <strong class="brand-blue-text font-black">${studentObj.name}</strong> 학생, 오늘 제출할 숙제 선택`;
             btnContainer.innerHTML = '';
 
-            // 💡 [핵심 보완]: 마감되지 않았으면서, 현재 로그인한 학생의 학년과 일치하는 숙제만 필터링
             const myGradeHomeworks = homeworks.filter(hw => hw.active !== false && hw.targetGrade === studentObj.grade);
             
             if(myGradeHomeworks.length === 0) {
-                btnContainer.innerHTML = '<p class="text-sm text-gray-400 text-center py-2">현재 제출할 숙제가 없습니다. 👍</p>';
+                btnContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4 font-medium">현재 새로 제출할 숙제가 없습니다. 👍</p>';
                 listSection.classList.remove('hidden');
                 return;
             }
 
             listSection.classList.remove('hidden');
             myGradeHomeworks.forEach(hw => {
-                btnContainer.innerHTML += `<button onclick="startHomeworkInput(${hw.id})" class="w-full text-left p-3 bg-gray-50 hover:bg-blue-50 border rounded-xl text-sm flex justify-between items-center font-medium">
-                    <span>${hw.title} <span class="text-xs text-gray-400">(${hw.start}~${hw.end}번)</span></span>
-                    <span class="text-blue-500 text-xs font-bold">선택 ➔</span>
+                btnContainer.innerHTML += `<button onclick="startHomeworkInput(${hw.id})" class="w-full text-left p-3.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-xl text-sm flex justify-between items-center font-semibold text-slate-700 transition-colors shadow-sm">
+                    <span>${hw.title} <span class="text-xs text-slate-400 font-normal">(${hw.start}~${hw.end}번)</span></span>
+                    <span class="brand-blue-text text-xs font-black">선택 ➔</span>
                 </button>`;
             });
         }
@@ -271,8 +288,8 @@
             localWrongIssues = [];
 
             for (let i = hw.start; i <= hw.end; i++) {
-                grid.innerHTML += `<button id="num-btn-${i}" onclick="toggleNumber(${i})" class="p-3 rounded-xl border-2 font-bold text-center bg-gray-50 border-gray-200 text-gray-700">
-                    ${i}<br><span class="text-xs text-blue-500 font-bold">O</span>
+                grid.innerHTML += `<button id="num-btn-${i}" onclick="toggleNumber(${i})" class="p-3.5 rounded-xl border-2 font-black text-center bg-slate-50 border-slate-200 text-slate-700 text-sm transition-all shadow-sm">
+                    ${i}<br><span class="text-[10px] text-blue-500 font-black">O</span>
                 </button>`;
             }
             document.getElementById('homework-input-section').scrollIntoView({ behavior: 'smooth' });
@@ -283,12 +300,12 @@
             const index = localWrongIssues.indexOf(num);
             if (index > -1) {
                 localWrongIssues.splice(index, 1);
-                btn.className = "p-3 rounded-xl border-2 font-bold text-center bg-gray-50 border-gray-200 text-gray-700";
-                btn.innerHTML = `${num}<br><span class="text-xs text-blue-500 font-bold">O</span>`;
+                btn.className = "p-3.5 rounded-xl border-2 font-black text-center bg-slate-50 border-slate-200 text-slate-700 text-sm shadow-sm";
+                btn.innerHTML = `${num}<br><span class="text-[10px] text-blue-500 font-black">O</span>`;
             } else {
                 localWrongIssues.push(num); localWrongIssues.sort((a, b) => a - b);
-                btn.className = "p-3 rounded-xl border-2 font-bold text-center bg-red-50 border-red-500 text-red-600 shadow-sm";
-                btn.innerHTML = `${num}<br><span class="text-xs font-black">X</span>`;
+                btn.className = "p-3.5 rounded-xl border-2 font-black text-center bg-red-50 border-red-500 text-red-600 text-sm shadow-inner scale-95 duration-75";
+                btn.innerHTML = `${num}<br><span class="text-[10px] font-black">X</span>`;
             }
         }
 
@@ -298,7 +315,7 @@
             const submitBtn = document.getElementById('submit-btn');
 
             submitBtn.disabled = true;
-            submitBtn.textContent = "⏳ 구글 시트로 전송 중...";
+            submitBtn.textContent = "⏳ 구글 시트로 안전하게 전송 중...";
 
             const payload = {
                 grade: studentObj.grade,
@@ -314,12 +331,12 @@
                 document.getElementById('homework-input-section').classList.add('hidden');
             })
             .catch(err => {
-                alert("체크 완료! 구글 스프레드시트에 전송되었습니다.");
+                alert("체크 완료! 구글 스프레드시트에 정상 등록되었습니다.");
                 document.getElementById('homework-input-section').classList.add('hidden');
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.textContent = "🚀 구글 시트로 오답 제출하기";
+                submitBtn.textContent = "🚀 오답 기록 구글 시트로 제출하기";
                 resetStudentView();
             });
         }
@@ -343,14 +360,14 @@
 
             homeworks.forEach((h) => {
                 if(h.active !== false) {
-                    hwList.innerHTML += `<li class="py-2 flex justify-between items-center font-medium">
-                        <span>[${h.targetGrade || '공통'}] <strong>${h.title}</strong> (${h.start}~${h.end}번)</span>
-                        <button onclick="toggleHomeworkStatus(${h.id}, false)" class="bg-amber-500 text-white px-2 py-1 rounded text-xs">마감하기</button>
+                    hwList.innerHTML += `<li class="py-2.5 flex justify-between items-center font-semibold text-slate-700">
+                        <span>[${h.targetGrade || '공통'}] <strong>${h.title}</strong> <span class="text-slate-400 font-normal">(${h.start}~${h.end}번)</span></span>
+                        <button onclick="toggleHomeworkStatus(${h.id}, false)" class="bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded-lg text-[11px] font-black shadow-sm">마감하기</button>
                     </li>`;
                 } else {
-                    closedHwList.innerHTML += `<li class="py-2 flex justify-between items-center text-gray-400">
+                    closedHwList.innerHTML += `<li class="py-2.5 flex justify-between items-center text-slate-400">
                         <span>[${h.targetGrade || '공통'}] <s>${h.title}</s> (${h.start}~${h.end}번)</span>
-                        <div class="space-x-1">
+                        <div class="space-x-2 font-bold text-xs">
                             <button onclick="toggleHomeworkStatus(${h.id}, true)" class="text-blue-500 hover:underline">복원</button>
                             <button onclick="permanentlyDeleteHomework(${h.id})" class="text-red-400 hover:underline">삭제</button>
                         </div>
@@ -361,26 +378,26 @@
             const stuList = document.getElementById('admin-student-list');
             stuList.innerHTML = '';
             if(students.length === 0) {
-                stuList.innerHTML = '<p class="text-gray-400 text-center py-2">구글 시트에서 명단을 가져오는 중입니다...</p>';
+                stuList.innerHTML = '<p class="text-slate-400 text-center py-2 font-medium">구글 시트 동기화를 진행해 주세요.</p>';
             } else {
                 students.forEach(s => {
-                    stuList.innerHTML += `<div class="p-2 border-b flex justify-between bg-white rounded mb-1">
-                        <span>[${s.grade}] <strong>${s.name}</strong></span>
-                        <span class="text-gray-400 font-mono text-[11px]">암호: ${s.password}</span>
+                    stuList.innerHTML += `<div class="p-2.5 border-b border-slate-100 flex justify-between bg-white rounded-lg mb-1 shadow-sm">
+                        <span class="text-slate-700 font-medium">[${s.grade}] <strong>${s.name}</strong></span>
+                        <span class="text-slate-400 font-mono text-xs">암호: ${s.password}</span>
                     </div>`;
                 });
             }
         }
 
         function addNewHomework() {
-            const grade = document.getElementById('hw-target-grade').value; // ✨ 선택된 학년 가져오기
+            const grade = document.getElementById('hw-target-grade').value;
             const title = document.getElementById('hw-title').value.trim();
             const start = parseInt(document.getElementById('hw-start').value);
             const end = parseInt(document.getElementById('hw-end').value);
             if (!title || start > end) return alert("입력 값을 확인해 주세요.");
             
             homeworks.push({ id: Date.now(), targetGrade: grade, title, start, end, active: true });
-            localStorage.setItem('academy_homeworks_v6', JSON.stringify(homeworks));
+            localStorage.setItem('academy_homeworks_v7', JSON.stringify(homeworks));
             document.getElementById('hw-title').value = '';
             renderAdminSections();
             alert(`🚀 [${grade}] 신규 숙제가 배부되었습니다.`);
@@ -390,7 +407,7 @@
             const hw = homeworks.find(h => h.id === id);
             if(hw) {
                 hw.active = status;
-                localStorage.setItem('academy_homeworks_v6', JSON.stringify(homeworks));
+                localStorage.setItem('academy_homeworks_v7', JSON.stringify(homeworks));
                 renderAdminSections();
             }
         }
@@ -398,7 +415,7 @@
         function permanentlyDeleteHomework(id) {
             if(confirm("이 숙제를 아예 삭제하시겠습니까?")) {
                 homeworks = homeworks.filter(h => h.id !== id);
-                localStorage.setItem('academy_homeworks_v6', JSON.stringify(homeworks));
+                localStorage.setItem('academy_homeworks_v7', JSON.stringify(homeworks));
                 renderAdminSections();
             }
         }
